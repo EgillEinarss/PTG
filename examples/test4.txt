@@ -1,0 +1,12 @@
+E -> T Em
+Em -> + T Em
+Em -> - T Em
+Em -> <e>
+T -> F Tm
+Tm -> * F Tm
+Tm -> / F Tm
+Tm -> <e>
+F -> ( E )
+F -> tala
+
+LL(1) og SLR(1)

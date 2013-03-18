@@ -1,0 +1,12 @@
+E -> B Em
+Em -> v B Em
+Em -> <e>
+B -> T Bm
+Bm -> ^ T Bm
+Bm -> <e>
+T -> ekki T
+T -> ( E )
+T -> 0
+T -> 1
+
+LL(1) og SLR(1)

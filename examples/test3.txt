@@ -1,0 +1,6 @@
+F -> T + F
+F -> T
+T -> ( F )
+T -> tala
+
+LR(1), SLR(1) og LALR(1)
