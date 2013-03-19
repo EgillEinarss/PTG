@@ -110,17 +110,6 @@ class PTGobject{
     java.util.ArrayList<PTGoptions> opts;
     Grammar g;
     String start, empty, end;
-    /*
-        Integer key:
-        0 - First
-        1 - Follow
-        2 - LL(1)
-        3 - SLR(1)
-        4 - LALR(1)
-        
-        10 - LR(0) state machine
-        11 - LR(1) state machine
-    */
     
     public PTGobject(String[] args){
         this.args = args;
@@ -156,7 +145,7 @@ class PTGobject{
                     case LL1:
                         opts.add(ll(i));
                         break;
-                    case LR0: //state machine
+                    case LR0M: //state machine
                         opts.add(lrM(i, "LR0M"));
                         break;
                     case SLR1:
@@ -168,7 +157,7 @@ class PTGobject{
                     case LR1:
                         opts.add(lr(i, "LR1"));
                         break;
-                    case LALR1M: //state machine.þæ
+                    case LALR1M: //state machine
                         opts.add(lrM(i, "LALR1M"));
                         break;
                     case LALR1:
@@ -200,7 +189,7 @@ class PTGobject{
         FIRST,
         FOLLOW,
         LL1,
-        LR0,
+        LR0M,
         SLR1,
         LR1M,
         LALR1M,
@@ -210,46 +199,46 @@ class PTGobject{
     }
     
     private String[] params(int i, String suffix){
-        String[] a = new String[2];
+        String[] a = new String[4];
         a[0] = "";
         a[1] = "";
-        if(i+1 < args.length && !args[i+1].startsWith("-")){
-            if(args[i+1].toUpperCase().equals("HTML") || args[i+1].toUpperCase().equals("LATEX"))
-                a[1] = args[i+1].toUpperCase();
-            else a[0] = args[i+1];
-            if(i+2 < args.length && !args[i+2].startsWith("-")){
-                if(args[i+2].toUpperCase().equals("HTML") || args[i+2].toUpperCase().equals("LATEX"))
-                    a[1] = args[i+2].toUpperCase();
-                else a[0] = args[i+2];
-            }
+        a[2] = "";
+        a[3] = "";
+        while(++i < args.length && !args[i].startsWith("-")){
+            if(args[i].toUpperCase().equals("HTML") || args[i].toUpperCase().equals("LATEX"))
+                a[1] = args[i].toUpperCase();
+            else if(args[i].toUpperCase().equals("GZ") || args[i].toUpperCase().equals("TIKZ")){
+                //Do nothing
+            } else if(args[i].toUpperCase().equals("TINY") || args[i].toUpperCase().equals("SMALL") || args[i].toUpperCase().equals("LARGE"))
+                a[2] = args[i].toUpperCase();
+			else if(args[i].toUpperCase().equals("LR"))
+				a[3] = "LR";
+            else a[0] = args[i].toUpperCase();
         }
+        
         if(a[0].equals("")) a[0] = ind == -1 ? args[0] : args[0].substring(0, ind);
         if(a[1].equals("")) a[1] = "BOTH";
         return a;
     }
     
     private String[] paramsM(int i, String suffix){
-        String[] a = new String[3];
+        String[] a = new String[4];
         a[0] = "";
         a[1] = "";
         a[2] = "";
+        a[3] = "";
         while(++i < args.length && !args[i].startsWith("-")){
-            if(args[i].toUpperCase().equals("GZ") || args[i].toUpperCase().equals("TIKZ"))
+            if(args[i].toUpperCase().equals("HTML") || args[i].toUpperCase().equals("LATEX")){
+                //Do nothing
+            } else if(args[i].toUpperCase().equals("GZ") || args[i].toUpperCase().equals("TIKZ"))
                 a[1] = args[i].toUpperCase();
             else if(args[i].toUpperCase().equals("TINY") || args[i].toUpperCase().equals("SMALL") || args[i].toUpperCase().equals("LARGE"))
                 a[2] = args[i].toUpperCase();
+			else if(args[i].toUpperCase().equals("LR"))
+				a[3] = "LR";
             else a[0] = args[i].toUpperCase();
         }
-        /*if(i+1 < args.length && !args[i+1].startsWith("-")){
-            if(args[i+1].toUpperCase().equals("GZ") || args[i+1].toUpperCase().equals("TIKZ"))
-                a[1] = args[i+1].toUpperCase();
-            else a[0] = args[i+1];
-            if(i+2 < args.length && !args[i+2].startsWith("-")){
-                if(args[i+2].toUpperCase().equals("GZ") || args[i+2].toUpperCase().equals("TIKZ"))
-                    a[1] = args[i+2].toUpperCase();
-                else a[0] = args[i+2];
-            }
-        }*/
+        
         if(a[0].equals("")) a[0] = ind == -1 ? args[0] : args[0].substring(0, ind);
         if(a[1].equals("")) a[1] = "BOTH";
         return a;
@@ -295,6 +284,8 @@ class PTGobject{
         PTGoptions p = new PTGoptions(f, com, "", g.T.size());
         if(size.equals("SMALL")) p.stateSizeSmall();
         else if(size.equals("LARGE")) p.stateSizeLarge();
+		if(command[3].equals("LR")) p.leftRight();
+		else p.topDown();
         String[] columns = g.T.toArray(new String[1]);
         p.addColumns(columns, PTG.escapeHtml(columns, empty), PTG.escapeLatex(columns, empty, false));
         p.makeLastColumn(g.end);
@@ -304,149 +295,3 @@ class PTGobject{
     }
 }
 
-
-/*public class PTG{
-
-    /*
-        Integer key:
-        0 - First
-        1 - Follow
-        2 - LL(1)
-        3 - SLR(1)
-        4 - LALR(1)
-        
-        10 - LR(0) state machine
-        11 - LR(1) state machine
-    */
-    
-  /*  public static void main(String[] args){
-        if(args.length == 0 || 
-            args[0].toUpperCase().equals("HELP") ||
-            args[0].toUpperCase().equals("-HELP") ||
-            args[0].toUpperCase().equals("--HELP") )
-                help(0);
-        String file = "", start = "", empty = "<e>", end = "$";//, out = "", dot = "", type = "";
-        /*boolean first = false, firstH = false, follow = false, followH = false,
-            LL1 = false, LL1H = false, LR0 = false, SLR1 = false, SLR1H = false,
-            LR1 = false, LALR1 = false, LALR1H = false;*/
-    /*    for(int i = 0; i < args.length; i++){
-            if(args[i].startsWith("-")){
-                switch(Options.valueOf(args[i].substring(1).toUpperCase())){
-                    case START: start = args[++i]; break;
-                    case END: end = args[++i]; break;
-                    case EMPTY: empty = args[++i]; break;
-                    case O: out = args[++i]; break;
-                    case FIRST:
-                        first = true;
-                        if(args[i+1].toUpperCase().equals("HTML")){
-                            firstH = true;
-                            i++;
-                        }
-                        break;
-                    case FOLLOW:
-                        follow = true;
-                        if(args[i+1].toUpperCase().equals("HTML")){
-                            followH = true;
-                            i++;
-                        }
-                        break;
-                    case LL1:
-                        LL1 = true;
-                        if(args[i+1].toUpperCase().equals("HTML")){
-                            LL1H = true;
-                            i++;
-                        }
-                        break;
-                    case LR0: LR0 = true;
-                    case SLR1:
-                        SLR1 = true;
-                        if(args[i+1].toUpperCase().equals("HTML")){
-                            SLR1H = true;
-                            i++;
-                        }
-                        break;
-                    case LR1: LR1 = true;
-                    case LALR1:
-                        LALR1 = true;
-                        if(args[i+1].toUpperCase().equals("HTML")){
-                            LALR1H = true;
-                            i++;
-                        }
-                        break;
-                    case ALL:
-                        first = follow = LL1 = LR0 = SLR1 = LR1 = LALR1 = true; break;
-                    case HTML:
-                        firstH = followH = LL1H = SLR1H = LALR1H = true; break;
-                    case DOT: dot = args[++i]; break;
-                    case FILETYPE: type = args[++i]; break;
-                    default:
-                        System.out.println("Error: " + args[i] +" is an unknown commmand.\n");
-                        help(3);
-                }
-            } else {
-                if(file.equals("")) file = args[i];
-                else help(args[i]);
-            }
-        }
-        if(file.equals("")) help();
-        if(out.equals("")) out = file;
-        Grammar g = new Grammar(args[0], out, start, empty, end);
-        if(first) g.findFirst(firstH);
-        if(follow) g.findFollow(followH);
-        if(LL1) g.findLL1(LL1H);
-        if(LR0) g.findLR0();
-        if(SLR1) g.findSLR1(SLR1H);
-        if(LR1) g.findLR1();
-        if(LALR1) g.findLALR1(LALR1H);
-        if(!dot.equals("")){
-            /*if(type.equals("")) type = "png";
-            java.lang.Runtime rt = java.lang.Runtime.getRuntime();
-            java.lang.Process p1, p2;
-            if(LR0) p1 = rt.exec(dot + " -T" + type + " " + out + "LR0.gz -o " + out + "LR0." + type);
-            if(LR1) p2 = rt.exec(dot + " -T" + type + " " + out + "LR1.gz -o " + out + "LR1." + type);*/
-      /*  }
-    }
-    
-    private enum Options{
-        START,
-        END,
-        EMPTY,
-        O,
-        FIRST,
-        FOLLOW,
-        LL1,
-        LR0,
-        SLR1,
-        LR1,
-        LALR1,
-        ALL,
-        HTML,
-        DOT,
-        FILETYPE
-    }
-    
-    private static void help(){
-        System.out.println("Error: fileName not specified.\n");
-        help(1);
-    }
-    
-    private static void help(String e){
-        System.out.println("Error: Could not interpret " + e + ", fileName already defined.\n");
-        help(2);
-    }
-    
-    private static void help(int x){
-        //TODO: Needs updating
-        System.out.println("Print a helpful message. If this was not requested then the input was incorrect.");
-        System.out.println("Usage: java AutoParser fileName[ empty[ end[ start]]]");
-        System.out.println("fileName: An input file containing a viable grammar.");
-        System.out.println("empty: The empty string token to be used.");
-        System.out.println("\tDefault is <e>.");
-        System.out.println("end: The prefered end of file token.");
-        System.out.println("\tDefault is $.");
-        System.out.println("start: The start variable of the grammar in fileName.");
-        System.out.println("\tDefault is the first variable in fileName.");
-        System.exit(x);
-    }
-    
-}*/

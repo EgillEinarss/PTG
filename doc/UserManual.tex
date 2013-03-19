@@ -12,6 +12,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
+\usepackage{listings}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{arrows,automata}
@@ -59,9 +60,11 @@ No guarantee is made that this software will run smoothly, without flaws, withou
 
 \section{Setup}
 
-Setup is simple as long as a JRE(Java Runtime Environment) has been setup. Go to the \href{PTG repository}{https://github.com/EgillEinarss/PTG} on Github.com and download PTG.jar. Place this file in the current command line directory and run
+Setup is simple as long as a JRE(Java Runtime Environment) has been setup. Go to the \href{https://github.com/EgillEinarss/PTG}{PTG repository} on Github.com and download PTG.jar. Place this file in the current command line directory and run
 
-\indent \verb#java -jar PTG [...]#
+\begin{lstlisting}[frame=single]
+java -jar PTG ...
+\end{lstlisting}
 
 \noindent along with any relevant arguments(detailed in the next section).
 
@@ -70,81 +73,95 @@ Setup is simple as long as a JRE(Java Runtime Environment) has been setup. Go to
 Required programs are \href{http://git-scm.com/}{git} and \href{http://www.gnu.org/software/make/}{make}.
 Use a command line. If needed, go to your projects directory and get the project with the command
 
-\indent \verb#git clone https://github.com/EgillEinarss/PTG.git#
+\begin{lstlisting}[frame=single]
+git clone https://github.com/EgillEinarss/PTG.git
+cd PTG
+\end{lstlisting}
 
-and enter the directory with
-
-\indent \verb#cd PTG#
-
-Alternatively go to the \href{https://github.com/EgillEinarss/PTG}{PTG repository} on Github.com and download what you want or require.
-
+\noindent Alternatively go to the \href{https://github.com/EgillEinarss/PTG}{PTG repository} on Github.com and download what you want or require.
 Now you have the developement environment setup used to create PTG. Now simply run the compilation process with the command
 
-\indent \verb#make#
+\begin{lstlisting}[frame=single]
+make
+\end{lstlisting}
 
-Simple.
+\noindent Simple.
+Feel free to modify the source code in the directory src, also any Java source files added into src will be compiled and added to the PTG jar file created by running make.
 
-Feel free to modify the source code in the directory src, also any Java source files added into the directory src will be compiled and added to the PTG jar file created by running the \tt{makefile}.
-
-    % [...]
-    % %\begin{multline}q_2\\ q_max\end{multline}$
-
-% \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm]
-  % \node[initial,state,accepting] (S)      {$S$};
-  % \node[state]         (q1) [right of=S,below of=S]  {$q_1$};
-  % \node[rectangle split, draw]         (q2) [right of=q1] {q \\ r};
-  
-  % \path[->]          (S)  edge [loop above] node {a} (S);
-  % \path[->, dashed]  (q1)  edge [loop above]  node {a} (q1);
-  % \path[->, dashed]  (S)  edge              node {a} (q1);
-  % \path[->, dotted]  (q1) edge [bend left]  node {a} (S);
-  % \path[->>, dotted] (q1) edge             node {b} (q2);
-  % \path              (q2) edge [loop above] node {b} (q2)
-             % edge [bend left]  node {b} (q1);
-% \end{tikzpicture}
-
-
-
-% \input{exampleLR0M.tex}
-
-
-% \input{exampleLR1M.tex}
-
-
-%\begin{tikzpicture}[shorten >=1pt,node distance=2cm,initial by arrow,initial where=above,initial text=,initial distance=1cm]
-%  \node[initial,state,accepting] (S)      {$S$};
-%  \node[state]         (q1) [right of=S,below of=S]  {$q_1$};
-%  \node[state]         (q2) [right of=q1] {$q_2$};
-%  
-%  \path[->]          (S)  edge [loop above] node {a} (S);
-%  \path[->, dashed]  (q1)  edge [loop above]  node {a} (q1);
-%  \path[->, dashed]  (S)  edge              node {a} (q1);
-%  \path[->, dotted]  (q1) edge [bend left]  node {a} (S);
-%  \path[->>, dotted] (q1) edge             node {b} (q2);
-%  \path              (q2) edge [loop above] node {b} (q2)
-%             edge [bend left]  node {b} (q1);  
-%\end{tikzpicture}
 
 \section{Missing Features}
 
-Some features are still waiting to be implemented or are improperly implented. This manual might even describe these features as implemented. A partial list of features or components in limbo:
+Some features are still waiting to be implemented or are improperly implented. This manual might even describe these features as if they were implemented. A partial list of features or components in limbo:
 
-% TODO: Add the list, will be a list of TODOs on the programming side.
 \begin{itemize}
-\item Either LR(0) or LALR(1) machines are incorrect.
+\item Either LR(1) or LALR(1) machines are incorrect.
 \item The LR option does nothing.
 \item Tikz is displaying terrible machines.
 \item This manual is far from resembling a useful manual.
 \item Tables for machines with memory, print an entry for each item in memory.
+\item No table outputed for tiny state machines.
+\item -ALL is missing items.
+\item The help text is outdated.
 \end{itemize}
 
 \section{Command Line Arguments}
 
 The syntax for command line execution is
 
+\begin{lstlisting}[frame=single]
+java -jar PTG Grammar Options Output
+\end{lstlisting}
 
-\indent \verb#java PTG Grammar [-Start symbol] [-End symbol] [-Empty symbol] #
-\indent ~ ~ \verb#([-table [table_type] [out]] | [-machine [] [out]])+# 
+\noindent where
+
+
+\begin{description}
+	\item[Grammar] The file containing the grammar to be parsed. Required and must be the first argument.
+	\item[Options] A few options that define the grammar. Any number of them may be used and must be followed by a String, see Settings for String.
+	\begin{description}
+		\item[-START] Sets the grammar's start variable to String. Default is the first variable listed in Grammar.
+		\item[-END] Sets the grammar's end of input token to String. Default is "\$".
+		\item[-EMPTY] Sets the grammar's empty string token as String. Default is "<e>".
+	\end{description}
+	\item[Output] This is the output request. All of them can be followed by Settings, if a String is defined then it will be the output file name, default is the filename of the grammar.
+	\begin{description}
+		\item[-ALL] Performs all of the following outputs.
+		\item[-FIRST] Creates a First table.
+		\item[-FOLLOW] Creates a Follow table.
+		\item[-LL1] Creates a LL(1) table.
+		\item[-SLR1] Creates a SLR(1) table.
+		\item[-LR1] Creates a LR(1) table.
+		\item[-LALR1] Creates a LALR(1) table.
+		\item[-LR0M] Creates a LR(0) state machine.
+		\item[-LR1M] Creates a LR(1) state machine.
+		\item[-LALRM] Creates a LALR(0) state machine.
+	\end{description}
+	\item[Settings] Any and all settings are optional, some are not applicable but cause no error.
+	\begin{description}
+		\item[HTML] The table being defined will only have HTML output.
+		\item[LATEX] The table being defined will only have \LaTeX output.
+		\item[GZ] The state machine being defined will be in GraphViz's DOT format.
+		\item[TIKZ] The state machine being defined will be in Tikz format.
+		\item[TINY] The state machine being defined will contain only a label, will produce a table for more information.
+		\item[SMALL] The state machine being defined will have a decreased description if possible.
+		\item[LARGE] The state machine being defined will have a full description.
+		\item[LR] The state machine being defined will go from left to right rather than top to bottom.
+		\item[String] Any string of characters that is not one of the above defined keywords, pretty much anything is accepted but might cause catastrophic failure.
+	\end{description}
+\end{description}
+
+Note that the keywords are in capital letters for clarity but in face PTG is case insensitive in regards to keywords. Here are a few example calls:
+
+\begin{lstlisting}[frame=single]
+java -jar PTG example.gra -all
+java -jar PTG example.gra -start Var2 -end EoF -empty e -ll1 html
+\end{lstlisting}
+
+
+\indent \verb#java -jar PTG Grammar [-Start symbol] [-End symbol] [-Empty symbol] #
+
+\indent ~ ~ \verb#( [-table [table_type] [out]] | [-machine [] [out]] )#$^+$ 
+
 
 
 \noindent or 
@@ -166,15 +183,28 @@ The syntax for command line execution is
 \noindent\verb#table# should be replaced with one of
 
 \indent\verb#first#
+
 \indent\verb#follow#
+
 \indent\verb#LL1#
+
 \indent\verb#SLR1#
+
 \indent\verb#LALR1#
+
 \indent\verb#LR1#
 
 \indent 
 
 \section{Preparing the Input Grammar File}
+
+The Input Grammar File is a text file that contains the grammar to parse. There are no intended constraints on the filename or it's extension, the filename(that is without the dot and extension) will be used as a default prefix for any output filenames unless a new name is given in the input arguments. In the file each line is one rule, each rule contains a left-hand side, a seperator and a right-hand side in that order. The left-hand side and the seperator are one symbol each whereas the right-hand side is a string of one or more symbols. A symbol is a whitespace terminated string of characters.
+
+So a rule is a string of three or more symbols where the first is the left-hand side and the second is a seperator. PTG will interpret any left-hand side symbols as being a variable in the grammar and the left-hand side of the first rule is the default start variable. Any symbols in a right-hand side that is not a variable is a terminal symbol. There is one special symbol which is the empty string symbol, in a rule that uses the empty symbol the right-hand side should consist of only the empty string symbol. The default empty string symbol is <e> but a new one can be defined as an input argument. To learn more about rules see \href{http://en.wikipedia.org/wiki/Formal_grammar#Context-free_grammars}{this Wikipedia article}.
+
+Lastly a grammar is terminated by an empty line. This allows a comment to follow after the grammar for whatever reason. An example of a grammar is shown below, this example is used in the section An Example below and the
+
+%\lstinputlisting{./../examples/example.gra}
 
 
 \section{Implementing Generated Files}
@@ -208,8 +238,9 @@ Graphviz statemachine files have the extension .gz and should be rendered using 
 
 \section{I found a bug, what should I do?}
 
-Sit tight, don't worry, we'll get through this. Send a few line describing what you were doing or intending to do, the command line inputs you used and the input grammar to [...]. //
-If you can't wait, then feel free to modify the source code in hopes of fixing the bug.
+Sit tight, don't worry, we'll get through this. Send a few line describing what you were doing or intending to do, the command line inputs you used and the input grammar to ebe10@HI.is and hopefully I can fix it or explain it. //
+If you can't wait, then feel free to modify the source code in hopes of fixing the bug.//
+Also feel free to send me a line with comments or complaints regarding PTG.
 
 
 \section{An Example}

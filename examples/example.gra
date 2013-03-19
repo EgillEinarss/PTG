@@ -1,3 +1,10 @@
+S -> ( S ) S
+S -> <e>
+
+A comment starts here.
+This is an example grammar for PTG and is used to generate
+the example tables and state machines in the manual.
+
 E -> T Em
 Em -> v T Em
 Em -> <e>
@@ -6,9 +13,3 @@ T -> ^
 T -> ( E )
 T -> 0
 T -> 1
-
-S -> ( S ) S
-S -> <e>
-
-This is an example grammar for PTG and is used to generate
-the example tables and state machines in the manual.
