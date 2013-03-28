@@ -20,12 +20,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class StateMachine<S, T>{
+public class StateMachine<S extends java.util.Collection, T>{
     List<S> Q; //states
     List<HashMap<T, Integer>> d; //transistions
     java.util.Comparator<S> comparator;
     int current;
     int stateSize;
+	//Merger merger;
     
     public StateMachine(S I, java.util.Comparator<S> comparator, int stateSize){
         Q = new ArrayList<S>();
@@ -48,6 +49,8 @@ public class StateMachine<S, T>{
             add(g);
         }
         d.get(I).put(X, IX);
+		if(IX != -1)
+			Q.get(IX).addAll(g);
     }
     
     private int repeatOf(S g){

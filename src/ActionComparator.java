@@ -30,7 +30,7 @@ class ActionComparator implements java.util.Comparator<Action>{
     public boolean equals(Action a, Action b){
         if(a.pos != b.pos) return false;
         if(!a.left.equals(b.left)) return false;
-        if(!a.follow().equals(b.follow())) return false;
+        //if(!a.follow().equals(b.follow())) return false;
         return (new StringArrayComparator()).equals(a.right, b.right);
     }
 }

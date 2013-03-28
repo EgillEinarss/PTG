@@ -310,7 +310,7 @@ public class Grammar{
         return M;
     }
     
-    public String[] SLR1(StateMachine M, int s, String a){
+    /*public String[] SLR1(StateMachine M, int s, String a){
         String[] o = new String[2];
         o[0] = ""; //HTML
         o[1] = ""; //LaTex
@@ -338,9 +338,58 @@ public class Grammar{
             }
         }
         return o;
-    }
-    
-    public String[] LALR1(StateMachine M, int s, String a){
+    }*/
+	
+	private String[] Tree2Str(TreeSet<String> html, TreeSet<String> tex, String sepHtml, String sepTex){
+		String[] o = new String[2];
+		o[0] = "";
+		o[1] = "";
+		for(String a : html){
+			if(!o[0].equals("")) o[0] += sepHtml;
+			o[0] += a;
+		}
+		for(String a : tex){
+			if(!o[1].equals("")) o[1] += sepTex;
+			o[1] += a;
+		}
+		return o;
+	}
+	
+	public String[] SLR1(StateMachine M, int s, String a){
+        TreeSet<String> html = new TreeSet<String>(); //HTML
+        TreeSet<String> tex = new TreeSet<String>(); //LaTex
+        TreeSet<Action> I = (TreeSet<Action>)(M.get(s));
+        if((int)(M.get(s, a)) != -1){
+            if(V.contains(a)){
+				html.add("I<sub>" + (int)(M.get(s, a)) + "</sub>");
+				tex.add("I$_{" + (int)(M.get(s, a)) + "}$");
+			} else{
+                html.add("shift I<sub>" + (int)(M.get(s, a)) + "</sub>");
+                tex.add("shift I$_{" + (int)(M.get(s, a)) + "}$");
+            }
+        }
+        for(Action A : I){
+            if(A.completed() && follow(A.left).contains(a)){
+                /*if(!o[0].equals("")){
+                    o[0] += "<br>";
+                    o[1] += " \\\\ ";
+                    if(noConflict){
+                        noConflict = false;
+                        System.err.println("SLR(1) conflict detected. Could be others.");
+                    }
+                }*/
+                html.add("reduce " + PTG.escapeHtml(A.left, empty) + " &rarr; " + arrayToString(PTG.escapeHtml(A.right, empty)));
+                tex.add("reduce " + PTG.escapeLatex(A.left, empty, false) + " $\\rightarrow$ " + arrayToString(PTG.escapeLatex(A.right, empty, false)));
+            }
+        }
+		if(noConflict && html.size() > 1){
+			noConflict = false;
+			System.err.println("SLR(1) conflict detected. Could be others.");
+		}
+        return Tree2Str(html, tex, "<br>", " \\\\ ");
+	}
+	
+    /*public String[] LALR1(StateMachine M, int s, String a){
         String[] o = new String[2];
         o[0] = ""; //HTML
         o[1] = ""; //LaTex
@@ -368,99 +417,77 @@ public class Grammar{
             }
         }
         return o;
-    }
+    }*/
 
-    public String[] LR1(StateMachine M, int s, String a){
-        String[] o = new String[2];
-        o[0] = ""; //HTML
-        o[1] = ""; //LaTex
+    public String[] LALR1(StateMachine M, int s, String a){
+		TreeSet<String> html = new TreeSet<String>(); //HTML
+        TreeSet<String> tex = new TreeSet<String>(); //LaTex
         TreeSet<ExtendedAction> I = (TreeSet<ExtendedAction>)(M.get(s));
         if((int)(M.get(s, a)) != -1){
-            if(!V.contains(a)){
-                o[0] += "shift ";
-                o[1] += "shift ";
+            if(V.contains(a)){
+				html.add("I<sub>" + (int)(M.get(s, a)) + "</sub>");
+				tex.add("I$_{" + (int)(M.get(s, a)) + "}$");
+			} else{
+                html.add("shift I<sub>" + (int)(M.get(s, a)) + "</sub>");
+                tex.add("shift I$_{" + (int)(M.get(s, a)) + "}$");
             }
-            o[0] += "I<sub>" + (int)(M.get(s, a)) + "</sub>";
-            o[1] += "I$_{" + (int)(M.get(s, a)) + "}$";
+        }
+        for(Action A : I){
+            //if(A.completed() && follow(A.left).contains(a)){
+			if(A.completed() && T.contains(A.follow()) && follow(A.left).contains(a)){
+                /*if(!o[0].equals("")){
+                    o[0] += "<br>";
+                    o[1] += " \\\\ ";
+                    if(noConflict){
+                        noConflict = false;
+                        System.err.println("SLR(1) conflict detected. Could be others.");
+                    }
+                }*/
+                html.add("reduce " + PTG.escapeHtml(A.left, empty) + " &rarr; " + arrayToString(PTG.escapeHtml(A.right, empty)));
+                tex.add("reduce " + PTG.escapeLatex(A.left, empty, false) + " $\\rightarrow$ " + arrayToString(PTG.escapeLatex(A.right, empty, false)));
+            }
+        }
+		if(noConflict && html.size() > 1){
+			noConflict = false;
+			System.err.println("LALR(1) conflict detected. Could be others.");
+		}
+		return Tree2Str(html, tex, "<br>", " \\\\ ");
+	}
+	
+    public String[] LR1(StateMachine M, int s, String a){
+        TreeSet<String> html = new TreeSet<String>(); //HTML
+        TreeSet<String> tex = new TreeSet<String>(); //LaTex
+        TreeSet<ExtendedAction> I = (TreeSet<ExtendedAction>)(M.get(s));
+        if((int)(M.get(s, a)) != -1){
+            if(V.contains(a)){
+				html.add("I<sub>" + (int)(M.get(s, a)) + "</sub>");
+				tex.add("I$_{" + (int)(M.get(s, a)) + "}$");
+			} else{
+                html.add("shift I<sub>" + (int)(M.get(s, a)) + "</sub>");
+                tex.add("shift I$_{" + (int)(M.get(s, a)) + "}$");
+            }
         }
         for(Action A : I){
             if(A.completed() && T.contains(A.follow()) && follow(A.left).contains(a)){
-                if(!o[0].equals("")){
+                /*if(!o[0].equals("")){
                     o[0] += "<br>";
                     o[1] += " \\\\ ";
                     if(noConflict){
                         noConflict = false;
                         System.err.println("LR(1) conflict detected. Could be others.");
                     }
-                }
-                o[0] += "reduce " + PTG.escapeHtml(A.left, empty) + " &rarr; " + arrayToString(PTG.escapeHtml(A.right,empty));
-                o[1] += "reduce " + PTG.escapeLatex(A.left, empty, false) + " $\\rightarrow$ " + arrayToString(PTG.escapeLatex(A.right,empty, false));
+                }*/
+                html.add("reduce " + PTG.escapeHtml(A.left, empty) + " &rarr; " + arrayToString(PTG.escapeHtml(A.right, empty)));
+                tex.add("reduce " + PTG.escapeLatex(A.left, empty, false) + " $\\rightarrow$ " + arrayToString(PTG.escapeLatex(A.right, empty, false)));
             }
         }
-        return o;
+		if(noConflict && html.size() > 1){
+			noConflict = false;
+			System.err.println("LR(1) conflict detected. Could be others.");
+		}
+        return Tree2Str(html, tex, "<br>", " \\\\ ");
     }
 
-    /*public void LaTeXTC(callObject co, String suffix, String title, String[] rows, String[] columns, int vbreak){
-        try{
-            java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(prefix + suffix + ".tex"));
-            if(vbreak == -1)
-                bw.write("\\begin{tabular}{|" + repeatString(" c |", columns.length + 1) + "}");
-            else
-                bw.write("\\begin{tabular}{|" + repeatString(" c |", vbreak + 1) + "|" + repeatString(" c |", columns.length - vbreak) + "}");
-            bw.newLine();
-            bw.write("  \\hline");
-            bw.newLine();
-            bw.write("  \\verb#" + title + "#");
-            for(String s : columns)
-                bw.write(" & \\verb#" + s + "#");
-            bw.write(" \\\\ \\hline");
-            bw.newLine();
-            for(String A : rows){
-                if(A.startsWith("I$_{")) bw.write("  " + A);
-                else bw.write("  \\verb#" + A + "#");
-                for(String b : columns) bw.write(" & " + co.call(A,b,false) );
-                bw.write(" \\\\ \\hline");
-                bw.newLine();
-            }
-            bw.write("\\end{tabular}");
-            bw.newLine();
-            bw.close();
-        } catch(java.io.IOException e){
-            System.out.println(prefix + suffix + ".tex appears to be locked.\n");
-            System.exit(9);
-        }
-    }
-    
-    public void htmlTC(callObject co, String suffix, String title, String[] rows, String[] columns){
-        try{
-            java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(prefix + suffix + ".html"));
-            bw.write("<table border='1' align='center'>");
-            bw.newLine();
-            bw.write("  <tbody>");
-            bw.newLine();
-            bw.write("    <tr align='center'> <td>" + title + "</td>");
-            for(String s : columns)
-                bw.write(" <td>" + s + "</td>");
-            bw.write("</tr>");
-            bw.newLine();
-            for(String A : rows){
-                bw.write("    <tr align='center'> <td>" + A + "</td>");
-                for(String b : columns) bw.write(" <td>" + co.call(A,b,true) + "</td>");
-                bw.write("</tr>");
-                bw.newLine();
-            }
-            bw.write("  </tbody>");
-            bw.newLine();
-            bw.write("</table>");
-            bw.newLine();
-            bw.close();
-        } catch(java.io.IOException e){
-            System.out.println(prefix + suffix + ".html appears to be locked.\n");
-            System.exit(9);
-        }
-    }
-    */
-    
     public void tableCreator(callObject co, PTGoptions opt){
         if(opt.latex){
             try{

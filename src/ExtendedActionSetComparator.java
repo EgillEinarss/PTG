@@ -27,7 +27,7 @@ public class ExtendedActionSetComparator implements java.util.Comparator<TreeSet
     }
     
     public boolean equals(TreeSet<ExtendedAction> A, TreeSet<ExtendedAction> B){
-        if(A.size() != B.size()) return false;
+        //if(A.size() != B.size()) return false;
         ExtendedActionComparator c = new ExtendedActionComparator();
         for(ExtendedAction a : A){
             boolean r = false;

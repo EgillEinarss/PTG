@@ -1,6 +1,6 @@
 
 %% dot -Tpng exampleLR0M.gz -o exampleLR0M.png
-%%
+%% 
 %%  
 %%
 
@@ -94,7 +94,7 @@ Feel free to modify the source code in the directory src, also any Java source f
 Some features are still waiting to be implemented or are improperly implented. This manual might even describe these features as if they were implemented. A partial list of features or components in limbo:
 
 \begin{itemize}
-\item Either LR(1) or LALR(1) machines are incorrect.
+\item LALR(1) machines are incorrect(besides not existing), resulting in incorrect LALR(1) tables.
 \item The LR option does nothing.
 \item Tikz is displaying terrible machines.
 \item This manual is far from resembling a useful manual.
@@ -198,13 +198,15 @@ java -jar PTG example.gra -start Var2 -end EoF -empty e -ll1 html
 
 \section{Preparing the Input Grammar File}
 
-The Input Grammar File is a text file that contains the grammar to parse. There are no intended constraints on the filename or it's extension, the filename(that is without the dot and extension) will be used as a default prefix for any output filenames unless a new name is given in the input arguments. In the file each line is one rule, each rule contains a left-hand side, a seperator and a right-hand side in that order. The left-hand side and the seperator are one symbol each whereas the right-hand side is a string of one or more symbols. A symbol is a whitespace terminated string of characters.
+The Input Grammar File is a text file that contains the grammar to parse. There are no intended constraints on the filename or it's extension, the filename(that is without the dot and extension) will be used as a default prefix for any output filenames unless a new name is given in the input arguments. In the file each line is one rule, each rule contains a left-hand side, a seperator and a right-hand side in that order. The left-hand side and the seperator are one symbol each whereas the right-hand side is a string consisting of one or more symbols. A symbol is a whitespace terminated string of characters.
 
-So a rule is a string of three or more symbols where the first is the left-hand side and the second is a seperator. PTG will interpret any left-hand side symbols as being a variable in the grammar and the left-hand side of the first rule is the default start variable. Any symbols in a right-hand side that is not a variable is a terminal symbol. There is one special symbol which is the empty string symbol, in a rule that uses the empty symbol the right-hand side should consist of only the empty string symbol. The default empty string symbol is <e> but a new one can be defined as an input argument. To learn more about rules see \href{http://en.wikipedia.org/wiki/Formal_grammar#Context-free_grammars}{this Wikipedia article}.
+So a rule is a string of three or more symbols where the first is the left-hand side and the second is a seperator. PTG will interpret any left-hand side symbols as being a variable in the grammar and the left-hand side of the first rule is the default start variable. Any symbols in a right-hand side that is not a variable is a terminal symbol.
 
-Lastly a grammar is terminated by an empty line. This allows a comment to follow after the grammar for whatever reason. An example of a grammar is shown below, this example is used in the section An Example below and the
+There is one special symbol which is the empty string symbol. In a rule that uses the empty symbol the right-hand side should consist of only the empty string symbol. The default empty string symbol is <e> but a new one can be defined as an input argument. To learn more about rules see \href{http://en.wikipedia.org/wiki/Formal_grammar#Context-free_grammars}{this Wikipedia article}.
 
-%\lstinputlisting{./../examples/example.gra}
+Lastly a grammar is terminated by an empty line. This allows a comment to follow after the grammar for whatever reason. An example of a grammar is shown below, this example is used in the Example section below. Here the default start variable is S.
+
+\lstinputlisting{examples/example.gra}
 
 
 \section{Implementing Generated Files}
