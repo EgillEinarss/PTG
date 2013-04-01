@@ -110,10 +110,12 @@ class Action{
     
     public String toTikz(boolean mathmode){
         String ret = "";
-        ret += PTG.escapeLatex(left, empty, mathmode) + " \\rightarrow ";
+		String dot = mathmode ? " \\cdot " : " $\\cdot$ ";
+		String arr = mathmode ? " \\rightarrow " : " $\\rightarrow$ ";
+        ret += PTG.escapeLatex(left, empty, mathmode) + arr;
         for(int i = 0; i < right.length; i++)
-            ret += i == pos ? " \\cdot " + PTG.escapeLatex(right[i], empty, mathmode) : " " + PTG.escapeLatex(right[i], empty, mathmode);
-        if(pos == right.length) ret += " \\cdot ";
+            ret += i == pos ? dot + PTG.escapeLatex(right[i], empty, mathmode) : " " + PTG.escapeLatex(right[i], empty, mathmode);
+        if(pos == right.length) ret += dot;
         return ret;
     }
 }

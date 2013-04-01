@@ -1,5 +1,5 @@
 digraph Automaton {
-  rankdir=TD;
+  rankdir=LR;
   start [shape=plaintext, width=0, label=""];
   start -> 0;
 0 [label=<I<sub>0</sub>:<br/>[S &rarr; &middot; ]<br/>[S &rarr; &middot; S ( S )]<br/>[S' &rarr; &middot; S]>]

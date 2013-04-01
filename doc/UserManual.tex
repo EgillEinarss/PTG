@@ -1,19 +1,20 @@
 
-%% dot -Tpng exampleLR0M.gz -o exampleLR0M.png
-%% 
-%%  
-%%
+%% Author: Egill Búi Einarsson
+%% PTG, Parsing Table Generator
+%% See copyleft below or in the generated document.
 
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[american]{babel}
 \usepackage[pdftex]{hyperref}
 \usepackage{times}
+\usepackage{float}
 \usepackage[T1]{fontenc}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{framed}
 \usepackage{tikz}
 \usetikzlibrary{arrows,automata}
 \usetikzlibrary{shapes.multipart}
@@ -31,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-PTG is a command-line program that generates files containing parsing tables and state machines for a given grammar. Generated tables are in either \LaTeX{} or HTML format which eases automated inserting of generated elements. Likewise the state machines can be inserted directly when TIKZ format is used. Alternativily state machines can use Graphviz's digraph automaton format for use with Graphviz DOT.
+PTG is a command-line program that generates files containing parsing tables and state machines for a formal language defined by an input grammar. Generated tables are in either \LaTeX{} or HTML format which eases automated inserting of generated elements. Likewise the state machines can be inserted directly when the TIKZ format is used. Alternativily state machines can use Graphviz's digraph automaton format which is intended for use with Graphviz DOT.
 \end{abstract}
 
 \section{Copyleft}
@@ -54,16 +55,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 \section{Introduction}
 
-PTG is run from a command-line terminal and generates parsing tables and state machines for LL(1), LR(0) and LR(1) grammars. A grammar's FIRST, FOLLOW, LL(1), SLR(1) and LALR(1) parsing tables can be generated in either \LaTeX{} or HTML format along with LR(0) and LR(1) state machines in Graphviz's digraph automaton format for use with DOT. The idea is when creating a document for a particular grammar that features some or all of these tables, instead of copying into the master file the generated files are dynamically linked. The result is that the document can be updated [...]
-
-No guarantee is made that this software will run smoothly, without flaws, without destroying other files, without corrupting data, without crashing your system, at all... etc. Please show the appropiate caution when running any software from the internet. Furthermore no guarantee is made on the correctness of the output. The second to last section of this manual details what to do if an error is encountered.
+PTG is run from a command-line terminal and generates parsing tables and state machines for context insensitive formal grammars. A grammar's FIRST, FOLLOW, LL(1), SLR(1), LALR(1) and LR(1) parsing tables can be generated in either \LaTeX{} or HTML format along with LR(0) and LR(1) state machines in Graphviz's digraph automaton format for use with DOT or TIKZ format for use directly in \LaTeX{}. The idea is when creating a document studying formal languages, that features some or all of these tables and machines, instead of writting theentites directly or copying a generated file into the master file PTG generated files can be dynamically linked in the master file. The result is that if the formal languages change then only the PTG grammar file needs to be updated, PTG run on the new grammar and Graphviz Dot on any digraph automaton format. The later two steps can of curse be automated with a make or batch file.
 
 \section{Setup}
 
 Setup is simple as long as a JRE(Java Runtime Environment) has been setup. Go to the \href{https://github.com/EgillEinarss/PTG}{PTG repository} on Github.com and download PTG.jar. Place this file in the current command line directory and run
 
 \begin{lstlisting}[frame=single]
-java -jar PTG ...
+	java -jar PTG.jar ...
 \end{lstlisting}
 
 \noindent along with any relevant arguments(detailed in the next section).
@@ -74,15 +73,15 @@ Required programs are \href{http://git-scm.com/}{git} and \href{http://www.gnu.o
 Use a command line. If needed, go to your projects directory and get the project with the command
 
 \begin{lstlisting}[frame=single]
-git clone https://github.com/EgillEinarss/PTG.git
-cd PTG
+	git clone https://github.com/EgillEinarss/PTG.git
+	cd PTG
 \end{lstlisting}
 
 \noindent Alternatively go to the \href{https://github.com/EgillEinarss/PTG}{PTG repository} on Github.com and download what you want or require.
-Now you have the developement environment setup used to create PTG. Now simply run the compilation process with the command
+Now you have the developement environment setup that was used to create PTG. Now simply run the compilation process with the command
 
 \begin{lstlisting}[frame=single]
-make
+	make
 \end{lstlisting}
 
 \noindent Simple.
@@ -95,24 +94,18 @@ Some features are still waiting to be implemented or are improperly implented. T
 
 \begin{itemize}
 \item LALR(1) machines are incorrect(besides not existing), resulting in incorrect LALR(1) tables.
-\item The LR option does nothing.
-\item Tikz is displaying terrible machines.
-\item This manual is far from resembling a useful manual.
-\item Tables for machines with memory, print an entry for each item in memory.
-\item No table outputed for tiny state machines.
-\item -ALL is missing items.
-\item The help text is outdated.
+\item Tikz is (often) displaying terrible machines. (Not caused by Tikz!)
 \end{itemize}
 
 \section{Command Line Arguments}
 
-The syntax for command line execution is
+The syntax for command line execution is:
 
 \begin{lstlisting}[frame=single]
-java -jar PTG Grammar Options Output
+	java -jar PTG.jar Grammar Options Output
 \end{lstlisting}
 
-\noindent where
+
 
 
 \begin{description}
@@ -123,7 +116,7 @@ java -jar PTG Grammar Options Output
 		\item[-END] Sets the grammar's end of input token to String. Default is "\$".
 		\item[-EMPTY] Sets the grammar's empty string token as String. Default is "<e>".
 	\end{description}
-	\item[Output] This is the output request. All of them can be followed by Settings, if a String is defined then it will be the output file name, default is the filename of the grammar.
+	\item[Output] This is the output request. All of them can be followed by Settings, if a String is defined then it will be the output file name, the filename of the grammar is used as a default.
 	\begin{description}
 		\item[-ALL] Performs all of the following outputs.
 		\item[-FIRST] Creates a First table.
@@ -150,55 +143,55 @@ java -jar PTG Grammar Options Output
 	\end{description}
 \end{description}
 
-Note that the keywords are in capital letters for clarity but in face PTG is case insensitive in regards to keywords. Here are a few example calls:
+Note that the keywords are in capital letters for clarity but in fact PTG is case insensitive in regards to keywords. Here are a few example calls:
 
 \begin{lstlisting}[frame=single]
-java -jar PTG example.gra -all
-java -jar PTG example.gra -start Var2 -end EoF -empty e -ll1 html
+	java -jar PTG.jar example.gra -all
+	java -jar PTG.jar example.gra -start Var2 -end EoF -empty e -ll1 html
 \end{lstlisting}
 
 
-\indent \verb#java -jar PTG Grammar [-Start symbol] [-End symbol] [-Empty symbol] #
+\indent \verb#java -jar PTG.jar Grammar [-Start symbol] [-End symbol] [-Empty symbol] #
 
-\indent ~ ~ \verb#( [-table [table_type] [out]] | [-machine [] [out]] )#$^+$ 
-
-
-
-\noindent or 
+% \indent ~ ~ \verb#( [-table [table_type] [out]] | [-machine [] [out]] )#$^+$ 
 
 
-\indent \verb#java PTG grammar [-start symbol] [-end symbol] [-empty symbol] -all [out] # 
+
+% \noindent or 
 
 
-\noindent\verb#grammar# is the file that contains the grammar that will be parsed, it is a required argument and needs to be the first one supplied.
+% \indent \verb#java PTG grammar [-start symbol] [-end symbol] [-empty symbol] -all [out] # 
 
-\noindent\verb#start# is an optional parameter which sets the start variable of the grammar to the supplied symbol. The default is the first variable listed in the grammar.
 
-\noindent\verb#end# is an optional parameter which sets the end of input variable of the grammar to the supplied symbol. The default is \verb#$#.
+% \noindent\verb#grammar# is the file that contains the grammar that will be parsed, it is a required argument and needs to be the first one supplied.
 
-\noindent\verb#empty# is an optional parameter which sets the empty string of the grammar to the supplied symbol. Default is \verb#<e>#.
+% \noindent\verb#start# is an optional parameter which sets the start variable of the grammar to the supplied symbol. The default is the first variable listed in the grammar.
 
-\noindent\verb#symbol# a string that should avoid the symbol \verb|#| along with all whitespace.
+% \noindent\verb#end# is an optional parameter which sets the end of input variable of the grammar to the supplied symbol. The default is \verb#$#.
 
-\noindent\verb#table# should be replaced with one of
+% \noindent\verb#empty# is an optional parameter which sets the empty string of the grammar to the supplied symbol. Default is \verb#<e>#.
 
-\indent\verb#first#
+% \noindent\verb#symbol# a string that should avoid the symbol \verb|#| along with all whitespace.
 
-\indent\verb#follow#
+% \noindent\verb#table# should be replaced with one of
 
-\indent\verb#LL1#
+% \indent\verb#first#
 
-\indent\verb#SLR1#
+% \indent\verb#follow#
 
-\indent\verb#LALR1#
+% \indent\verb#LL1#
 
-\indent\verb#LR1#
+% \indent\verb#SLR1#
 
-\indent 
+% \indent\verb#LALR1#
+
+% \indent\verb#LR1#
+
+% \indent 
 
 \section{Preparing the Input Grammar File}
 
-The Input Grammar File is a text file that contains the grammar to parse. There are no intended constraints on the filename or it's extension, the filename(that is without the dot and extension) will be used as a default prefix for any output filenames unless a new name is given in the input arguments. In the file each line is one rule, each rule contains a left-hand side, a seperator and a right-hand side in that order. The left-hand side and the seperator are one symbol each whereas the right-hand side is a string consisting of one or more symbols. A symbol is a whitespace terminated string of characters.
+The Input Grammar File is a text file that contains the grammar to parse. There are no intended constraints on the filename or it's extension, the filename(that is without the dot and extension) will be used as a default prefix for any output filenames unless a new name is supplied by the input arguments. In the file each line is one rule, each rule contains a left-hand side, a seperator and a right-hand side in that order. The left-hand side and the seperator are one symbol each whereas the right-hand side is a string consisting of one or more symbols. A symbol is a whitespace terminated string of characters.
 
 So a rule is a string of three or more symbols where the first is the left-hand side and the second is a seperator. PTG will interpret any left-hand side symbols as being a variable in the grammar and the left-hand side of the first rule is the default start variable. Any symbols in a right-hand side that is not a variable is a terminal symbol.
 
@@ -206,87 +199,137 @@ There is one special symbol which is the empty string symbol. In a rule that use
 
 Lastly a grammar is terminated by an empty line. This allows a comment to follow after the grammar for whatever reason. An example of a grammar is shown below, this example is used in the Example section below. Here the default start variable is S.
 
+\begin{framed}
 \lstinputlisting{examples/example.gra}
+\end{framed}
 
 
 \section{Implementing Generated Files}
 \subsection{ \LaTeX{} Tables}
-There are two simple ways to use generated \LaTeX{} tables, either by copy pasting or using the input command. PTG generates a tabular environment as opposed to an actual table environment, this is because a table (or other container, for example a figure) has commands that relate to placement of the environment in the document. The input command will allow the use of generated tex files directly. This allows a user to update a grammar file, run PTG for that grammar and then recompile the document. A table or figure environment can be used to contain the input command. Below is an example of how to insert a file named \tt{exampleTable.tex} into a figure:
+There are two simple ways to use generated \LaTeX{} tables, either by copy pasting or using the input command. PTG generates a tabular environment as opposed to an actual table environment, this is because a table (or other container, for example a figure) has commands that relate to placement of the environment in the document. The input command will allow the use of generated tex files directly. This allows a user to update a grammar file, run PTG for that grammar and then recompile the document. A table or figure environment can be used to contain the input command. Below is an example of how to insert a file named exampleTable.tex into a figure:
 
-\begin{figure}[h]
-    \begin{minipage}{2in}
-        \begin{verbatim}
-            \begin{table}
-            \centering
-            %\input{exampleTable.tex}
-            \caption{A caption for the table}
-            \label{table:TableLabel}
-            \end{table}
-        \end{verbatim}
-    \end{minipage}
-\end{figure}
+\begin{lstlisting}[frame=single]
+	\begin{table}
+	\centering
+	\input{exampleTable.tex}
+	\caption{A caption for the table}
+	\label{table:TableLabel}
+	\end{table}
+\end{lstlisting}
 
 Both the caption and label commands are optional and the arguments supplied for them are nonsensical, \verb#\centering# is also optional.
 
 \subsection{HTML Tables}
+
+For now the recommendation is copy-pasting the contents of the generated file into the master file or just hyperlinking the generated file as an individual page from the master file. There should be a work-around with Javascript and it is quite simple to fix the problem with PHP.
+
+\subsection{TIKZ Statemachines}
+
+\begin{lstlisting}[frame=single]
+	\usepackage{tikz}
+	\usetikzlibrary{arrows,automata}
+	\usetikzlibrary{shapes.multipart}
+	\usetikzlibrary{shapes.misc}
+\end{lstlisting}
+Add these commands to the document header, between the documentclass and document directive, if missing. Now a generated Tikz statemachine contained in the file exampleMachine.tex can be added with:
+\begin{lstlisting}[frame=single]
+	\input{exampleMachine.tex}
+\end{lstlisting}
+
+
 \subsection{Graphviz Statemachines}
 Graphviz statemachine files have the extension .gz and should be rendered using Graphviz DOT. An example command to render exampleSM.gz as a png image file named exampleSM.png would be:
 
-
-\indent\verb#.\dot -Tpng exampleSM.gz -o exampleSM.png#
-
+\begin{lstlisting}[frame=single]
+	dot -Tpng exampleSM.gz -o exampleSM.png
+\end{lstlisting}
 
 \noindent Check the DOT documentation for more details. http://www.graphviz.org/pdf/dotguide.pdf
 
 \section{I found a bug, what should I do?}
 
-Sit tight, don't worry, we'll get through this. Send a few line describing what you were doing or intending to do, the command line inputs you used and the input grammar to ebe10@HI.is and hopefully I can fix it or explain it. //
+Go to the \href{https://github.com/EgillEinarss/PTG}{PTG repository} and check if it is a known issue, if not added it there. Remember to supply all the necessary information, that is what you intended to do, what PTG did, the commandline argument you used and lastly the input grammar file.\\
 If you can't wait, then feel free to modify the source code in hopes of fixing the bug.//
 Also feel free to send me a line with comments or complaints regarding PTG.
 
 
 \section{An Example}
 
-\begingroup
-\obeycr
-%\input{example.gra}%
-\endgroup%
+Here is an example to demonstrate the use of PTG. The text for the example is in the example.gra in the examples directory of the \href{https://github.com/EgillEinarss/PTG}{PTG repository} and is as follows:
+
+\begin{framed}
+\lstinputlisting{examples/example.gra}
+\end{framed}
+
+The FIRST, FOLLOW and LL(1) parse tables can be generated by the command:
+
+\begin{lstlisting}[frame=single]
+	java -jar PTG.jar examples/example.gra -first -follow -LL1
+\end{lstlisting}
+
+
 
 \begin{table}[h]
+	\centering
     \begin{tabular}{l c r}
-        \begin{minipage}{1in}
-            %\input{exfirst.tex}
+        \begin{minipage}{2in}
+            \input{examples/exampleFIRST.tex}
         \end{minipage}
         \qquad
-        \begin{minipage}{1in}
-            %\input{exfollow.tex}
+        \begin{minipage}{2in}
+            \input{examples/exampleFOLLOW.tex}
         \end{minipage}
         \qquad
-        \begin{minipage}{1in}
-            %\input{exLL1.tex}
+        \begin{minipage}{2in}
+            \input{examples/exampleLL1.tex}
         \end{minipage}
     \end{tabular}
-    \caption{\tt{FIRST}, \tt{FOLLOW} and \tt{LL(1)} parsing of the example}
+    \caption{FIRST, FOLLOW and LL(1) parsing of example/example.gra}
     \label{table:ffex}
 \end{table}
 
-%\begin{figure}[h]
-    %\includegraphics[scale=0.4]{exLR0.png}
-    %\centering
-    %\\
-    %\input{exSLR1.tex}
-    %\caption{\tt{LR(0)} and \tt{SLR(1)} of the example.}
-    %\label{table:slrex}
-%\end{figure}
+Now let's generate LR(0) state machine in Graphviz format and create a png image file with DOT.
+\begin{lstlisting}[frame=single]
+	java -jar PTG.jar examples/example.gra -LR0M large gz
+	dot -Tpng examples/exampleLR0M.gz -o examples/exampleLR0M.png
+\end{lstlisting}
 
-%\begin{figure}[h]
-    %\includegraphics[scale=0.4]{exLR1.png}
-    %\centering
-    %\\
-    %\input{exLALR1.tex}
-    %\caption{\tt{LALR(1)} of the example.}
-    %\label{table:slrex}
-%\end{figure}
 
+\begin{figure}[H]
+    \includegraphics[scale=0.4]{examples/exampleLR0M.png}
+	\centering
+    \caption{LR(0) of examples/example.gra}
+    \label{table:slrex}
+\end{figure}
+
+\begin{table}[H]
+    \input{examples/exampleSLR1.tex}
+	\centering
+    \caption{SLR(1) of examples/example.gra}
+    \label{table:slrex}
+\end{table}
+
+Lastly let's generate the tiny LR(1) state machine along with the labels table:
+\begin{lstlisting}[frame=single]
+	java -jar PTG.jar examples/example.gra -LR1M tiny tikz
+\end{lstlisting}
+
+
+\begin{figure}[H]
+    \centering
+	\begin{tabular}{l r}
+        \begin{minipage}{2in}
+			\input{examples/exampleLR1M.tex}
+		\end{minipage}
+		\begin{minipage}{2in}
+			\input{examples/exampleLR1Mlabel.tex}
+		\end{minipage}
+    \end{tabular}
+    \caption{LR(0) statemachine for examples/example.gra with tiny states along with labels table.}
+    \label{figure:lrex}
+\end{figure}
+
+
+To end this example, the full \LaTeX{} source file can be read in doc/UserManual.tex in the \href{https://github.com/EgillEinarss/PTG}{PTG repository}.
 
 \end{document}

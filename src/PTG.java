@@ -91,16 +91,41 @@ public class PTG{
     
     public static void help(int x){
         //TODO: Needs updating
-        System.out.println("Print a helpful message. If this was not requested then the input was incorrect.");
-        System.out.println("Usage: java AutoParser fileName[ empty[ end[ start]]]");
+        System.out.println("PTG is a program to generate parsing tables and state machines for a given formal grammar.");
+		System.out.println("The grammar should be supplied as the first command line argument contained in it's own file.");
+		System.out.println("The file should contain a listing of the grammar's rules, each in it's own line with an empty line");
+        System.out.println("signifying the end of the input. The symbols of the rules should be seperated by white space.");
+		System.out.println("If this help message was not requested then most likely the input was incorrect.");
+        System.out.println("Example:");
+        System.out.println("\tE -> T + E\n\t E -> T\n\t T -> F * T\n\t T -> F\n\t F -> num\n\t F -> ( E )\n");
+        System.out.println("Example:");
+        System.out.println("Usage: java -jar PTG.jar fileName [start] [empty] [end] [options]");
         System.out.println("fileName: An input file containing a viable grammar.");
-        System.out.println("empty: The empty string token to be used.");
-        System.out.println("\tDefault is <e>.");
-        System.out.println("end: The prefered end of file token.");
-        System.out.println("\tDefault is $.");
         System.out.println("start: The start variable of the grammar in fileName.");
-        System.out.println("\tDefault is the first variable in fileName.");
-        System.exit(x);
+        System.out.println("\tDefault is the first variable in fileName. Example use: -start startVariable");
+        System.out.println("empty: The empty string token to be used.");
+        System.out.println("\tDefault is <e>. Example use: -empty e");
+        System.out.println("end: The prefered end of file token.");
+        System.out.println("\tDefault is $. Example use: -end EoF");
+		System.out.println("options: One of the various options for output, for details see the manual at");
+		System.out.println("\t./docs/UserManual.pdf  or if missing check out the repository, https://github.com/EgillEinarss/PTG");
+		System.out.println("\t-First extended-options");
+		System.out.println("\t-Follow extended-options");
+		System.out.println("\t-LL1 extended-options");
+		System.out.println("\t-LR0M extended-options");
+		System.out.println("\t-SLR1 extended-options");
+		System.out.println("\t-LR1M extended-options");
+		System.out.println("\t-LR1 extended-options");
+		System.out.println("\t-LALR1M extended-options");
+		System.out.println("\t-LALR1 extended-options");
+		System.out.println("\t-All extended-options");
+		System.out.println("extended-options:");
+		System.out.println("\tA filename prefix.");
+		System.out.println("\tOutput format of the state machine: gz tikz");
+		System.out.println("\tOutput format of the parsing tables: latex html");
+		System.out.println("\tSize of the state machine nodes: tiny large");
+		System.out.println("\tDirection of growth of the state machine: TD LR");
+		System.exit(x);
     }
 }
 
@@ -135,51 +160,65 @@ class PTGobject{
         g = new Grammar(args[0], "obs", start, empty, end);
         for(int i = 1; i < args.length; i++){
             if(args[i].startsWith("-")){
-                switch(Options.valueOf(args[i].substring(1).toUpperCase())){
-                    case FIRST:
-                        opts.add(ff(i, "FIRST"));
-                        break;
-                    case FOLLOW:
-                        opts.add(ff(i, "FOLLOW"));
-                        break;
-                    case LL1:
-                        opts.add(ll(i));
-                        break;
-                    case LR0M: //state machine
-                        opts.add(lrM(i, "LR0M"));
-                        break;
-                    case SLR1:
-                        opts.add(lr(i, "SLR1"));
-                        break;
-                    case LR1M: //state machine
-                        opts.add(lrM(i, "LR1M"));
-                        break;
-                    case LR1:
-                        opts.add(lr(i, "LR1"));
-                        break;
-                    case LALR1M: //state machine
-                        opts.add(lrM(i, "LALR1M"));
-                        break;
-                    case LALR1:
-                        opts.add(lr(i, "LALR1"));
-                        break;
-                    case ALL:
-                        opts.add(ff(i, "FIRST"));
-                        opts.add(ff(i, "FOLLOW"));
-                        opts.add(ll(i));
-                        opts.add(lrM(i, "LR0M"));
-                        opts.add(lr(i, "SLR1"));
-                        opts.add(lrM(i, "LR1M"));
-                        opts.add(lr(i, "LR1"));
-                        opts.add(lrM(i, "LALR1M"));
-                        opts.add(lr(i, "LALR1"));
-                        break;
-                    default: break;
-                }
+				try{
+					switch(Options.valueOf(args[i].substring(1).toUpperCase())){
+						case FIRST:
+							opts.add(ff(i, "FIRST"));
+							break;
+						case FOLLOW:
+							opts.add(ff(i, "FOLLOW"));
+							break;
+						case LL1:
+							opts.add(ll(i));
+							break;
+						case LR0M: //state machine
+							opts.add(lrM(i, "LR0M"));
+							break;
+						case SLR1:
+							opts.add(lr(i, "SLR1"));
+							break;
+						case LR1M: //state machine
+							opts.add(lrM(i, "LR1M"));
+							break;
+						case LR1:
+							opts.add(lr(i, "LR1"));
+							break;
+						case LALR1M: //state machine
+							opts.add(lrM(i, "LALR1M"));
+							break;
+						case LALR1:
+							opts.add(lr(i, "LALR1"));
+							break;
+						case ALL:
+							opts.add(ff(i, "FIRST"));
+							opts.add(ff(i, "FOLLOW"));
+							opts.add(ll(i));
+							opts.add(lrM(i, "LR0M"));
+							opts.add(lr(i, "SLR1"));
+							opts.add(lrM(i, "LR1M"));
+							opts.add(lr(i, "LR1"));
+							opts.add(lrM(i, "LALR1M"));
+							opts.add(lr(i, "LALR1"));
+							break;
+						default: break;
+					}
+				} catch(Exception e){
+					System.err.println("Error: Unknown option " + args[i] + ". Option skipped.");
+				}
             }
         }
-        for(PTGoptions p : opts)
-            g.find(p);
+		for(int i = 0; i < opts.size(); i++){
+			PTGoptions p = opts.get(i);
+			g.find(p);
+			if(p.title.endsWith("M") && p.stateSize == 0){
+				String[] com = new String[2];
+				com[0] = p.outname;
+				com[1] = "BOTH";
+				PTGoptions q = new PTGoptions(p.title + "label", com, "State", -1);
+				q.addColumn("Current Rule Set", "Current Rule Set", "Current Rule Set");
+				opts.add(q);
+			}
+		}
     }
     
     private enum Options{

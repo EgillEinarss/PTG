@@ -51,22 +51,10 @@ public class ExtendedAction extends Action{
     }
     
     public String toHtml(){
-        String ret = "";
-        ret += PTG.escapeHtml(left, empty) + " &rarr;";
-        for(int i = 0; i < right.length; i++)
-            ret += i == pos ? " &middot; " + PTG.escapeHtml(right[i], empty) : " " + PTG.escapeHtml(right[i], empty);
-        if(pos == right.length) ret += " &middot;";
-        ret += ", " + PTG.escapeHtml(follow, empty);
-        return ret;
+        return super.toHtml() + ", " + PTG.escapeHtml(follow, empty);
     }
     
     public String toTikz(boolean mathmode){
-        String ret = "";
-        ret += PTG.escapeLatex(left, empty, mathmode) + " \\rightarrow ";
-        for(int i = 0; i < right.length; i++)
-            ret += i == pos ? " \\cdot " + PTG.escapeLatex(right[i], empty, mathmode) : " " + PTG.escapeLatex(right[i], empty, mathmode);
-        if(pos == right.length) ret += " \\cdot ";
-        ret += ", " + PTG.escapeLatex(follow, empty, mathmode);
-        return ret;
+        return super.toTikz(mathmode) + ", " + PTG.escapeLatex(follow, empty, mathmode);
     }
 }

@@ -158,7 +158,7 @@ public class StateMachine<S extends java.util.Collection, T>{
             }
             java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(filename));
             //bw.write("\\begin{tikzpicture}[shorten >=1pt,node distance=4cm,on grid,initial above,initial text=,initial distance=1cm]");
-            bw.write("\\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=4cm,every text node part/.style={align=center}]");
+            bw.write("\\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm,every text node part/.style={align=center}]");
             bw.newLine();
             bw.write("  \\node[initial,state]  (i0)  {$I_0$");
             if(stateSize > 0)

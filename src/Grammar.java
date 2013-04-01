@@ -176,6 +176,25 @@ public class Grammar{
             if(opt.latex) LR(new ExtendedAction(newStart, start, 0, end, false, empty),
                                 new ActionSetComparator(), opt.stateSize).makeTikz(opt.outname + opt.title + ".tex", V, empty, opt.LR);
         }
+		else if(opt.title.equals("LR0Mlabel")){
+			M = LR(new Action(newStart, start, 0, end, true, empty), new ActionSetComparator(), opt.stateSize);
+			opt.addStates(M.size());
+			tableCreator(new labelCO(M,
+				LR(new Action(newStart, start, 0, end, false, empty), new ActionSetComparator(), opt.stateSize)), opt);
+		}
+		else if(opt.title.equals("LR1Mlabel")){
+			M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ExtendedActionSetComparator(), opt.stateSize);
+			opt.addStates(M.size());
+			tableCreator(new labelCO(M,
+				LR(new ExtendedAction(newStart, start, 0, end, false, empty), new ExtendedActionSetComparator(), opt.stateSize)), opt);
+		}
+		else if(opt.title.equals("LALR1Mlabel")){
+			M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ActionSetComparator(), opt.stateSize);
+			opt.addStates(M.size());
+			tableCreator(new labelCO(M,
+				LR(new ExtendedAction(newStart, start, 0, end, false, empty), new ActionSetComparator(), opt.stateSize)), opt);
+		}
+		
     }
     
     /*  variable attribute
@@ -717,6 +736,36 @@ public class Grammar{
         
         public String latex(String A, String b){
             return LR1(M, Integer.parseInt(A), b)[1];
+        }
+    }
+	
+	public class labelCO extends callObject{
+        StateMachine MH;
+		StateMachine ML;
+        
+        public labelCO(StateMachine MH, StateMachine ML){
+            this.MH = MH;
+			this.ML = ML;
+        }
+        
+        public String html(String A, String b){
+            TreeSet<Action> I = (TreeSet<Action>)(MH.get(Integer.parseInt(A)));
+			String s = "";
+			for(Action a : I){
+				if(!s.equals("")) s += "</br>";
+				s += a.toHtml();
+			}
+			return s;
+        }
+        
+        public String latex(String A, String b){
+            TreeSet<Action> I = (TreeSet<Action>)(ML.get(Integer.parseInt(A)));
+			String s = "";
+			for(Action a : I){
+				if(!s.equals("")) s += " \\\\ ";
+				s += a.toTikz(false);
+			}
+			return s;
         }
     }
 }
