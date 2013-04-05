@@ -1,9 +1,9 @@
-\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=4cm,every text node part/.style={align=center}]
-  \node[initial,state]  (i0)  {$I_0$ \\ $S \rightarrow  \cdot $\epsilon$, \$ $ \\ $S \rightarrow  \cdot $\epsilon$, ($ \\ $S \rightarrow  \cdot S ( S ), \$ $ \\ $S \rightarrow  \cdot S ( S ), ($ \\ $S' \rightarrow  \cdot S, \$ $};
+\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm,every text node part/.style={align=center}]
+  \node[initial,state]  (i0)  {$I_0$ \\ $S \rightarrow  \cdot \epsilon, \$ $ \\ $S \rightarrow  \cdot \epsilon, ($ \\ $S \rightarrow  \cdot S ( S ), \$ $ \\ $S \rightarrow  \cdot S ( S ), ($ \\ $S' \rightarrow  \cdot S, \$ $};
   \node[state]  (i1)  [below of=i0]  {$I_{1}$ \\ $S \rightarrow  S \cdot ( S ), \$ $ \\ $S \rightarrow  S \cdot ( S ), ($ \\ $S' \rightarrow  S \cdot , \$ $};
   \node[state]  (i2)  [below of=i1]  {$I_{2}$ \\ $S \rightarrow  \cdot , ($ \\ $S \rightarrow  \cdot , )$ \\ $S \rightarrow  \cdot S ( S ), ($ \\ $S \rightarrow  \cdot S ( S ), )$ \\ $S \rightarrow  S ( \cdot S ), \$ $ \\ $S \rightarrow  S ( \cdot S ), ($ \\ $S \rightarrow  S ( \cdot S ), )$};
-  \node[state]  (i3)  [below of=i2]  {$I_{3}$ \\ $S \rightarrow  S \cdot ( S ), ($ \\ $S \rightarrow  S \cdot ( S ), )$ \\ $S \rightarrow  S ( S \cdot ), \$ $ \\ $S \rightarrow  S ( S \cdot ), ($};
-  \node[state]  (i4)  [below of=i3]  {$I_{4}$ \\ $S \rightarrow  S ( S ) \cdot , \$ $ \\ $S \rightarrow  S ( S ) \cdot , ($};
+  \node[state]  (i3)  [below of=i2]  {$I_{3}$ \\ $S \rightarrow  S \cdot ( S ), ($ \\ $S \rightarrow  S \cdot ( S ), )$ \\ $S \rightarrow  S ( S \cdot ), \$ $ \\ $S \rightarrow  S ( S \cdot ), ($ \\ $S \rightarrow  S ( S \cdot ), )$};
+  \node[state]  (i4)  [below of=i3]  {$I_{4}$ \\ $S \rightarrow  S ( S ) \cdot , \$ $ \\ $S \rightarrow  S ( S ) \cdot , ($ \\ $S \rightarrow  S ( S ) \cdot , )$};
   \path[->,dashed] (i0) edge [right] node {S} (i1);
   \path[->] (i1) edge [right] node {(} (i2);
   \path[->,dashed] (i2) edge [right] node {S} (i3);

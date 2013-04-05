@@ -42,7 +42,7 @@ public class ExtendedAction extends Action{
         return new ExtendedAction(next(), right, 0, follow, html, empty);
     }
     
-    public String follow(){
+    public String lookahead(){
         return follow;
     }
     

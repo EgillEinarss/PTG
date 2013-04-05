@@ -42,7 +42,9 @@ public class PTG{
     }
     
     public static String escapeLatex(String s, String e, boolean mathmode){
-        if(s.equals(e)) return "$\\epsilon$";
+        if(s.equals(e))
+			if(mathmode) return "\\epsilon";
+			else return "$\\epsilon$";
         int i = 0;
         String sub = "";
         while(i < s.length()){
@@ -149,19 +151,23 @@ class PTGobject{
         start = ""; empty = "<e>"; end = "$";
         for(int i = 1; i < args.length; i++){
             if(args[i].startsWith("-")){
-                switch(Options.valueOf(args[i].substring(1).toUpperCase())){
-                    case START: start = args[++i]; break;
-                    case END:   end = args[++i]; break;
-                    case EMPTY: empty = args[++i]; break;
-                    default: break;
-                }
+                try{
+					switch(Options.from(args[i].substring(1).toUpperCase())){
+						case START: start = args[++i]; break;
+						case END:   end = args[++i]; break;
+						case EMPTY: empty = args[++i]; break;
+						default: break;
+					}
+				} catch(java.util.NoSuchElementException e){
+					System.err.println("Error: Unknown option " + args[i] + ". Option skipped.");
+				}
             }
         }
         g = new Grammar(args[0], "obs", start, empty, end);
         for(int i = 1; i < args.length; i++){
             if(args[i].startsWith("-")){
 				try{
-					switch(Options.valueOf(args[i].substring(1).toUpperCase())){
+					switch(Options.from(args[i].substring(1).toUpperCase())){
 						case FIRST:
 							opts.add(ff(i, "FIRST"));
 							break;
@@ -202,8 +208,8 @@ class PTGobject{
 							break;
 						default: break;
 					}
-				} catch(Exception e){
-					System.err.println("Error: Unknown option " + args[i] + ". Option skipped.");
+				} catch(java.util.NoSuchElementException e){
+					// Errors already reported.
 				}
             }
         }
@@ -221,7 +227,7 @@ class PTGobject{
 		}
     }
     
-    private enum Options{
+    /*private enum Options{
         START,
         END,
         EMPTY,
@@ -235,6 +241,41 @@ class PTGobject{
         LR1,
         LALR1,
         ALL
+    }*/
+	
+	private enum Options{
+		// The makings of this enum were troublesome, but eventually the Internet helped.
+		//	Credit:		http://www.canoo.com/blog/2010/09/24/beautiful-java-enums/
+        START("START"),
+        END("END"),
+        EMPTY("EMPTY"),
+        FIRST("FIRST"),
+        FOLLOW("FOLLOW"),
+        LL1("LL1"),
+        LR0M("LR0M"),
+        SLR1("SLR1"),
+        LR1M("LR1M"),
+        LALR1M("LALR1M"),
+        LR1("LR1"),
+        LALR1("LALR1"),
+        ALL("ALL");
+		
+		private final String name;
+		
+		private static final java.util.Map<String, Options> map =
+			new java.util.HashMap<String, Options>();
+			
+		static { for(Options o: Options.values()){ map.put(o.name, o); } }
+		
+		private Options(String name){ this.name = name; }
+		
+		public String get(){ return name; }
+		
+		public static Options from(String name){
+			if(map.containsKey(name))
+				return map.get(name);
+			throw new java.util.NoSuchElementException(name + " not found.");
+		}
     }
     
     private String[] params(int i, String suffix){

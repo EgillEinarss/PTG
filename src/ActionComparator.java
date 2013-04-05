@@ -21,7 +21,7 @@ class ActionComparator implements java.util.Comparator<Action>{
         if(!a.left.equals(b.left)) return a.left.compareTo(b.left);
         int c = (new StringArrayComparator()).compare(a.right, b.right);
         if(c == 0){
-            if(a.pos - b.pos == 0) return a.follow().compareTo(b.follow());
+            if(a.pos - b.pos == 0) return a.lookahead().compareTo(b.lookahead());
             return a.pos - b.pos;
         }
         return c;
@@ -30,7 +30,7 @@ class ActionComparator implements java.util.Comparator<Action>{
     public boolean equals(Action a, Action b){
         if(a.pos != b.pos) return false;
         if(!a.left.equals(b.left)) return false;
-        //if(!a.follow().equals(b.follow())) return false;
+        //if(!a.lookahead().equals(b.lookahead())) return false;
         return (new StringArrayComparator()).equals(a.right, b.right);
     }
 }

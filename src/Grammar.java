@@ -134,7 +134,9 @@ public class Grammar{
     
     public void find(PTGoptions opt){
         StateMachine M = null;
-        if(opt.title.equals("FIRST")){
+        StateMachine M2 = null;
+        
+		if(opt.title.equals("FIRST")){
             tableCreator(new firstCO(), opt);
         }
         else if(opt.title.equals("FOLLOW")){
@@ -157,7 +159,7 @@ public class Grammar{
         else if(opt.title.equals("LR1")){
             M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ExtendedActionSetComparator(), 2);
             opt.addStates(M.size());
-            tableCreator(new LR1CO(M), opt);
+            tableCreator(new LRCO(M), opt);
         }
         else if(opt.title.equals("LR1M")){
             if(opt.html) LR(new ExtendedAction(newStart, start, 0, end, true, empty),
@@ -166,15 +168,21 @@ public class Grammar{
                                 new ExtendedActionSetComparator(), opt.stateSize).makeTikz(opt.outname + opt.title + ".tex", V, empty, opt.LR);
         }
         else if(opt.title.equals("LALR1")){
-            M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ActionSetComparator(),2);
+            M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ExtendedActionSetComparator(),2);
+			M.reduce(new ActionSetComparator());
             opt.addStates(M.size());
-            tableCreator(new LALR1CO(M), opt);
+            tableCreator(new LRCO(M), opt);
         }
         else if(opt.title.equals("LALR1M")){
-            if(opt.html) LR(new ExtendedAction(newStart, start, 0, end, true, empty),
-                                new ActionSetComparator(), opt.stateSize).makeGz(opt.outname + opt.title + ".gz", V, empty, opt.LR);
-            if(opt.latex) LR(new ExtendedAction(newStart, start, 0, end, false, empty),
-                                new ActionSetComparator(), opt.stateSize).makeTikz(opt.outname + opt.title + ".tex", V, empty, opt.LR);
+            if(opt.html){
+				M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ExtendedActionSetComparator(), opt.stateSize);
+				M.reduce(new ActionSetComparator());
+				M.makeGz(opt.outname + opt.title + ".gz", V, empty, opt.LR);
+			} if(opt.latex){
+				M = LR(new ExtendedAction(newStart, start, 0, end, false, empty), new ExtendedActionSetComparator(), opt.stateSize);
+				M.reduce(new ActionSetComparator());
+				M.makeTikz(opt.outname + opt.title + ".tex", V, empty, opt.LR);
+			}
         }
 		else if(opt.title.equals("LR0Mlabel")){
 			M = LR(new Action(newStart, start, 0, end, true, empty), new ActionSetComparator(), opt.stateSize);
@@ -189,10 +197,12 @@ public class Grammar{
 				LR(new ExtendedAction(newStart, start, 0, end, false, empty), new ExtendedActionSetComparator(), opt.stateSize)), opt);
 		}
 		else if(opt.title.equals("LALR1Mlabel")){
-			M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ActionSetComparator(), opt.stateSize);
+			M = LR(new ExtendedAction(newStart, start, 0, end, true, empty), new ExtendedActionSetComparator(), opt.stateSize);
+			M.reduce(new ActionSetComparator());
 			opt.addStates(M.size());
-			tableCreator(new labelCO(M,
-				LR(new ExtendedAction(newStart, start, 0, end, false, empty), new ActionSetComparator(), opt.stateSize)), opt);
+			M2 = LR(new ExtendedAction(newStart, start, 0, end, false, empty), new ExtendedActionSetComparator(), opt.stateSize);
+			M2.reduce(new ActionSetComparator());
+			tableCreator(new labelCO(M, M2), opt);
 		}
 		
     }
@@ -295,9 +305,9 @@ public class Grammar{
             for(E a : I)
                 if(V.contains(a.next()))
                     for(String[] g : rules.get(a.next()))
-                        if(a.follow().equals("")) closure.add((E)a.next(g, ""));
+                        if(a.lookahead().equals("")) closure.add((E)a.next(g, ""));
                         else for(String b : T)
-                            if(first(a.beta(a.follow())).contains(b)) closure.add((E)a.next(g, b));
+                            if(first(a.beta(a.lookahead())).contains(b)) closure.add((E)a.next(g, b));
             I.addAll(closure);
         }
         return I;
@@ -451,9 +461,10 @@ public class Grammar{
                 tex.add("shift I$_{" + (int)(M.get(s, a)) + "}$");
             }
         }
-        for(Action A : I){
+        for(ExtendedAction A : I){
             //if(A.completed() && follow(A.left).contains(a)){
-			if(A.completed() && T.contains(A.follow()) && follow(A.left).contains(a)){
+			//if(A.completed() && T.contains(A.lookahead()) && follow(A.left).contains(a)){
+            if(A.completed() && A.lookahead().equals(a)){
                 /*if(!o[0].equals("")){
                     o[0] += "<br>";
                     o[1] += " \\\\ ";
@@ -487,7 +498,8 @@ public class Grammar{
             }
         }
         for(Action A : I){
-            if(A.completed() && T.contains(A.follow()) && follow(A.left).contains(a)){
+            if(A.completed() && T.contains(A.lookahead()) && A.lookahead().equals(a)){
+			//if(A.completed() && T.contains(A.lookahead()) && follow(A.left).contains(a)){
                 /*if(!o[0].equals("")){
                     o[0] += "<br>";
                     o[1] += " \\\\ ";
@@ -707,7 +719,7 @@ public class Grammar{
     /*  specific table element method 
     
     */
-    public class LALR1CO extends callObject{
+    /*public class LALR1CO extends callObject{
         StateMachine M;
         
         public LALR1CO(StateMachine M){
@@ -721,12 +733,12 @@ public class Grammar{
         public String latex(String A, String b){
             return LALR1(M, Integer.parseInt(A), b)[1];
         }
-    }
+    }*/
     
-    public class LR1CO extends callObject{
+    public class LRCO extends callObject{
         StateMachine M;
         
-        public LR1CO(StateMachine M){
+        public LRCO(StateMachine M){
             this.M = M;
         }
         

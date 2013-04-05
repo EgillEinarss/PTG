@@ -1,6 +1,6 @@
 F -> F + T
 F -> T
 T -> ( F )
-T -> tala
+T -> num
 
 LR(1), SLR(1) og LALR(1)

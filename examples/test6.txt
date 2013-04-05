@@ -4,7 +4,7 @@ Em -> <e>
 B -> T Bm
 Bm -> ^ T Bm
 Bm -> <e>
-T -> ekki T
+T -> not T
 T -> ( E )
 T -> 0
 T -> 1

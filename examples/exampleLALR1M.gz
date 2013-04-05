@@ -1,12 +1,12 @@
 digraph Automaton {
-  rankdir=TD;
+  rankdir=LR;
   start [shape=plaintext, width=0, label=""];
   start -> 0;
 0 [label=<I<sub>0</sub>:<br/>[S &rarr; &middot; , $]<br/>[S &rarr; &middot; , (]<br/>[S &rarr; &middot; S ( S ), $]<br/>[S &rarr; &middot; S ( S ), (]<br/>[S' &rarr; &middot; S, $]>]
 1 [label=<I<sub>1</sub>:<br/>[S &rarr; S &middot; ( S ), $]<br/>[S &rarr; S &middot; ( S ), (]<br/>[S' &rarr; S &middot;, $]>]
 2 [label=<I<sub>2</sub>:<br/>[S &rarr; &middot; , (]<br/>[S &rarr; &middot; , )]<br/>[S &rarr; &middot; S ( S ), (]<br/>[S &rarr; &middot; S ( S ), )]<br/>[S &rarr; S ( &middot; S ), $]<br/>[S &rarr; S ( &middot; S ), (]<br/>[S &rarr; S ( &middot; S ), )]>]
-3 [label=<I<sub>3</sub>:<br/>[S &rarr; S &middot; ( S ), (]<br/>[S &rarr; S &middot; ( S ), )]<br/>[S &rarr; S ( S &middot; ), $]<br/>[S &rarr; S ( S &middot; ), (]>]
-4 [label=<I<sub>4</sub>:<br/>[S &rarr; S ( S ) &middot;, $]<br/>[S &rarr; S ( S ) &middot;, (]>]
+3 [label=<I<sub>3</sub>:<br/>[S &rarr; S &middot; ( S ), (]<br/>[S &rarr; S &middot; ( S ), )]<br/>[S &rarr; S ( S &middot; ), $]<br/>[S &rarr; S ( S &middot; ), (]<br/>[S &rarr; S ( S &middot; ), )]>]
+4 [label=<I<sub>4</sub>:<br/>[S &rarr; S ( S ) &middot;, $]<br/>[S &rarr; S ( S ) &middot;, (]<br/>[S &rarr; S ( S ) &middot;, )]>]
   0 -> 1 [style=dashed label="S"]
   1 -> 2 [style=solid label="("]
   2 -> 3 [style=dashed label="S"]

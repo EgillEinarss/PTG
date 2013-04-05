@@ -24,9 +24,7 @@ public class StateMachine<S extends java.util.Collection, T>{
     List<S> Q; //states
     List<HashMap<T, Integer>> d; //transistions
     java.util.Comparator<S> comparator;
-    int current;
     int stateSize;
-	//Merger merger;
     
     public StateMachine(S I, java.util.Comparator<S> comparator, int stateSize){
         Q = new ArrayList<S>();
@@ -34,7 +32,6 @@ public class StateMachine<S extends java.util.Collection, T>{
         add(I);
         this.comparator = comparator;
         this.stateSize = stateSize;
-        current = 0;
     }
     
     private void add(S I){
@@ -55,14 +52,20 @@ public class StateMachine<S extends java.util.Collection, T>{
     
     private int repeatOf(S g){
         for(int i = 0; i < Q.size(); i++)
-            if(comparator.compare(Q.get(i), g) == 0) return i;
+            if(comparator.compare(get(i), g) == 0) return i;
         return -1;
     }
+	
+	public int repeatOf(int i, java.util.Comparator<S> comp){
+		S g = get(i);
+		for(int j = i+1; j < size(); j++)
+		    if(comp.compare(get(j), g) == 0) return j;
+        return -1;
+	}
     
     public S get(int i){
         return Q.get(i);
     }
-    
     
     public int get(int s, T a){
         if(s >= Q.size() || !d.get(s).containsKey(a)) return -1;
@@ -85,6 +88,30 @@ public class StateMachine<S extends java.util.Collection, T>{
             System.out.println("\n");
         }
     }
+	
+	public void reduce(java.util.Comparator<S> comp){
+		int IX;
+		for(int i = 0; i < size(); i++)
+			while((IX = repeatOf(i, comp)) != -1)
+				reduce(i,IX);
+	}
+	
+	public void reduce(int i, int j){
+		get(i).addAll(get(j));
+		d.get(j).putAll(d.get(i));
+		d.get(i).putAll(d.get(j));
+		for(HashMap<T, Integer> map: d){
+			for(T key : map.keySet()){
+				int k = map.get(key).intValue();
+				if(k == j)
+					map.put(key, new Integer(i));
+				else if(k > j)
+					map.put(key, new Integer(k-1));
+			}
+		}
+		Q.remove(j);
+		d.remove(j);
+	}
     
     public void makeGz(String filename, java.util.TreeSet<String> V, String empty, boolean LR){
         try{

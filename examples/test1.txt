@@ -2,6 +2,6 @@ F -> T Fm
 Fm -> + T Fm
 Fm -> <e>
 T -> ( F )
-T -> tala
+T -> num
 
 LL(1) og SLR(1)

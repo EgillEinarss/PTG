@@ -1,12 +1,12 @@
 \begin{tabular}{| c | c | c | c || c |}
   \hline
   State & ( & ) & \$  & S \\ \hline
-  I$_{0}$ & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{I$_{1}$} \\ \hline
+  I$_{0}$ & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{I$_{1}$} \\ \hline
   I$_{1}$ & \shortstack{shift I$_{2}$} & \shortstack{} & \shortstack{reduce S' $\rightarrow$  S} & \shortstack{} \\ \hline
-  I$_{2}$ & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{I$_{3}$} \\ \hline
+  I$_{2}$ & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{} & \shortstack{I$_{3}$} \\ \hline
   I$_{3}$ & \shortstack{shift I$_{4}$} & \shortstack{shift I$_{5}$} & \shortstack{} & \shortstack{} \\ \hline
-  I$_{4}$ & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{I$_{6}$} \\ \hline
-  I$_{5}$ & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{} \\ \hline
+  I$_{4}$ & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{reduce S $\rightarrow$  $\epsilon$} & \shortstack{} & \shortstack{I$_{6}$} \\ \hline
+  I$_{5}$ & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{} & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{} \\ \hline
   I$_{6}$ & \shortstack{shift I$_{4}$} & \shortstack{shift I$_{7}$} & \shortstack{} & \shortstack{} \\ \hline
-  I$_{7}$ & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{} \\ \hline
+  I$_{7}$ & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{reduce S $\rightarrow$  S ( S )} & \shortstack{} & \shortstack{} \\ \hline
 \end{tabular}

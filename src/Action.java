@@ -57,7 +57,7 @@ class Action{
         this.empty = empty;
     }
     
-    public String follow(){
+    public String lookahead(){
         return "";
     }
     
