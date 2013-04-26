@@ -244,26 +244,28 @@ public class Grammar{
     }
     
     private TreeSet<String> first(String[] Y){
-        TreeSet<String> first = new TreeSet<String>();
+		TreeSet<String> first = new TreeSet<String>();
         if(Y.length == 0){
             first.add(empty);
             return first;
         }
         for(int i = 0; i < Y.length; i++){
             first.addAll(first(Y[i]));
-            if(!(V.contains(Y[i]) && nullable(Y[i])) )
+			if(!(V.contains(Y[i]) && nullable(Y[i])) )
                 break;
+			if(i != Y.length - 1) first.remove(empty);
         }
         return first;
     }
     
     private TreeSet<String> first(String[] Y, TreeSet<String> first, TreeSet<String> checked){
-       for(int i = 0; i < Y.length; i++){
+		for(int i = 0; i < Y.length; i++){
             first.addAll(first(Y[i], first, checked));
-            if(!(V.contains(Y[i]) && nullable(Y[i])) )
+			if(!(V.contains(Y[i]) && nullable(Y[i])) )
                 break;
+			if(i != Y.length - 1) first.remove(empty);
         }
-        return first;
+		return first;
     }
     
     private TreeSet<String> follow(String B){
