@@ -51,6 +51,7 @@ public class PTG{
             char c = s.charAt(i);
             if(c == '\\') sub = mathmode ? "\\backslash " : "$\\backslash$";
             else if(c == '$') sub = "\\$ ";
+			else if(c == '*') sub = mathmode ? "*" : "$*$";
             else if(c == '#') sub = "\\# ";
             else if(c == '_') sub = "\\_ ";
             else if(c == '{') sub = "\\{ ";
